@@ -2,12 +2,14 @@ package cache
 
 import (
 	"context"
+	"github.com/Tus1688/library-management-api/types"
 	"github.com/redis/go-redis/v9"
 	"os"
 )
 
 type Cache interface {
 	Shutdown() error
+	SaveRefreshToken(token *string, uid *string) types.Err
 }
 
 type RedisStore struct {

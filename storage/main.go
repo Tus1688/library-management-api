@@ -2,6 +2,7 @@ package storage
 
 import (
 	"database/sql"
+	"github.com/Tus1688/library-management-api/types"
 	"os"
 
 	_ "github.com/lib/pq"
@@ -9,6 +10,8 @@ import (
 
 type Storage interface {
 	Shutdown() error
+	InitAdmin(username, password *string) error
+	Login(req *types.LoginRequest) (string, int, types.Err)
 }
 
 type PostgresStore struct {

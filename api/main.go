@@ -61,9 +61,7 @@ func handler(s *Server) http.Handler {
 
 	r.Route("/api/v1", func(r chi.Router) {
 		r.Route("/auth", func(r chi.Router) {
-			r.Post("/login", func(w http.ResponseWriter, r *http.Request) {
-				w.WriteHeader(http.StatusOK)
-			})
+			r.Post("/login", s.Login)
 		})
 	})
 
