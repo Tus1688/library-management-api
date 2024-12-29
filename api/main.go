@@ -64,6 +64,14 @@ func handler(s *Server) http.Handler {
 			r.Post("/login", s.Login)
 			r.Post("/logout", s.Logout)
 			r.Post("/refresh", s.RefreshToken)
+
+			r.Route("/dashboard", func(r chi.Router) {
+				r.Use(s.EnforceAuthentication(300, true))
+
+				r.Get("/user", s.GetEmployee)
+				r.Post("/user", s.CreateEmployee)
+				r.Delete("/user", s.DeleteEmployee)
+			})
 		})
 	})
 

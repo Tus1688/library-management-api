@@ -12,6 +12,9 @@ type Storage interface {
 	Shutdown() error
 	InitAdmin(username, password *string) error
 	Login(req *types.LoginRequest) (string, int, types.Err)
+	CreateEmployee(req *types.CreateEmployee) (types.CreateId, int, types.Err)
+	GetEmployee() ([]types.ListEmployee, int, types.Err)
+	DeleteEmployee(currentUserId, id *string) (int, types.Err)
 }
 
 type PostgresStore struct {

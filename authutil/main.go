@@ -12,6 +12,7 @@ type Session interface {
 	CreateRefreshToken() (string, types.Err)
 	SignRefreshToken(token *string) types.Err
 	VerifyRefreshToken(token *string) types.Err
+	ValidateToken(token string, ttl uint32) (string, types.Err)
 }
 
 type SessionStore struct {
