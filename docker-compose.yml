@@ -1,0 +1,25 @@
+version: '3'
+
+services:
+  database:
+    image: postgres:16.4
+    restart: always
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    ports:
+      - "5432:5432"
+    volumes:
+      - library-management-postgres:/var/lib/postgresql/data
+
+  cache:
+    image: redis:alpine
+    restart: always
+    ports:
+      - "6379:6379"
+    volumes:
+      - library-management-redis:/data
+
+volumes:
+  library-management-postgres:
+  library-management-redis:
