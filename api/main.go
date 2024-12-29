@@ -84,6 +84,10 @@ func handler(s *Server) http.Handler {
 				r.Post("/book", s.CreateBook)
 				r.Put("/book", s.UpdateBook)
 				r.Delete("/book", s.DeleteBook)
+
+				r.Get("/booking", s.GetBooking)
+				r.Post("/booking", s.CreateBooking)
+				r.Post("/return", s.ReturnBook)
 			})
 		})
 	})

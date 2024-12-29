@@ -27,8 +27,7 @@ CREATE TABLE bookings(
     book_id UUID NOT NULL,
     customer_name TEXT NOT NULL,
     customer_phone TEXT NOT NULL,
-    booked_at TIMESTAMP DEFAULT NOW(),
-    expected_returned_at TIMESTAMP DEFAULT NOW() + INTERVAL '7 days',
+    is_returned BOOLEAN DEFAULT FALSE,
     returned_at TIMESTAMP,
     created_at TIMESTAMP DEFAULT NOW(),
     updated_at TIMESTAMP DEFAULT NOW(),
@@ -37,3 +36,4 @@ CREATE TABLE bookings(
     FOREIGN KEY (updated_by) REFERENCES employees(id)
 );
 
+CREATE INDEX idx_bookings_is_returned ON bookings(is_returned);

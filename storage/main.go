@@ -19,6 +19,9 @@ type Storage interface {
 	CreateBook(req *types.CreateBook) (types.CreateId, int, types.Err)
 	DeleteBook(id *string) (int, types.Err)
 	UpdateBook(req *types.UpdateBook) (int, types.Err)
+	CreateBooking(uid *string, req *types.CreateBooking) (types.CreateId, int, types.Err)
+	ReturnBook(id *string) (int, types.Err)
+	GetBooking(lastId, limit *int) ([]types.GetBooking, int, types.Err)
 }
 
 type PostgresStore struct {
