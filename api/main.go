@@ -73,6 +73,19 @@ func handler(s *Server) http.Handler {
 				r.Delete("/user", s.DeleteEmployee)
 			})
 		})
+
+		r.Route("/collections", func(r chi.Router) {
+			// public route
+			r.Get("/book", s.GetBook)
+
+			r.Route("/dashboard", func(r chi.Router) {
+				r.Use(s.EnforceAuthentication(600, true))
+
+				r.Post("/book", s.CreateBook)
+				r.Put("/book", s.UpdateBook)
+				r.Delete("/book", s.DeleteBook)
+			})
+		})
 	})
 
 	_ = chi.Walk(r, func(method string, route string, handler http.Handler, middlewares ...func(http.Handler) http.Handler) error {

@@ -9,7 +9,7 @@ CREATE TABLE employees(
 CREATE TABLE books(
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     pagination_id BIGSERIAL,
-    title TEXT NOT NULL,
+    title TEXT NOT NULL UNIQUE,
     author TEXT NOT NULL,
     description TEXT NOT NULL,
     is_booked BOOLEAN DEFAULT FALSE,
@@ -32,6 +32,8 @@ CREATE TABLE bookings(
     returned_at TIMESTAMP,
     created_at TIMESTAMP DEFAULT NOW(),
     updated_at TIMESTAMP DEFAULT NOW(),
-    FOREIGN KEY (book_id) REFERENCES books(id)
+    updated_by UUID,
+    FOREIGN KEY (book_id) REFERENCES books(id),
+    FOREIGN KEY (updated_by) REFERENCES employees(id)
 );
 

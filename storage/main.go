@@ -15,6 +15,10 @@ type Storage interface {
 	CreateEmployee(req *types.CreateEmployee) (types.CreateId, int, types.Err)
 	GetEmployee() ([]types.ListEmployee, int, types.Err)
 	DeleteEmployee(currentUserId, id *string) (int, types.Err)
+	GetBook(searchQuery *string, lastId, limit *int) ([]types.ListBook, int, types.Err)
+	CreateBook(req *types.CreateBook) (types.CreateId, int, types.Err)
+	DeleteBook(id *string) (int, types.Err)
+	UpdateBook(req *types.UpdateBook) (int, types.Err)
 }
 
 type PostgresStore struct {
