@@ -62,6 +62,8 @@ func handler(s *Server) http.Handler {
 	r.Route("/api/v1", func(r chi.Router) {
 		r.Route("/auth", func(r chi.Router) {
 			r.Post("/login", s.Login)
+			r.Post("/logout", s.Logout)
+			r.Post("/refresh", s.RefreshToken)
 		})
 	})
 

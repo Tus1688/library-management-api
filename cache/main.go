@@ -10,6 +10,8 @@ import (
 type Cache interface {
 	Shutdown() error
 	SaveRefreshToken(token *string, uid *string) types.Err
+	DeleteRefreshToken(token *string) types.Err
+	GetRefreshToken(token *string) (string, types.Err)
 }
 
 type RedisStore struct {
