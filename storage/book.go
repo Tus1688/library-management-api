@@ -6,6 +6,13 @@ import (
 	"strings"
 )
 
+// GetBook retrieves a list of books based on the search query, last ID, and limit.
+// It constructs a SQL query to fetch books from the database and returns the list of books.
+// Parameters:
+// - searchQuery: a pointer to the search query string
+// - lastId: a pointer to the last ID for pagination
+// - limit: a pointer to the limit of books to retrieve
+// Returns a slice of ListBook, status code, and an error if the operation fails.
 func (s *PostgresStore) GetBook(searchQuery *string, lastId, limit *int) ([]types.ListBook, int, types.Err) {
 	query := `SELECT id, pagination_id, title, author, description, is_booked, COALESCE(booked_until::TEXT,''),
 	created_at, updated_at FROM books`
@@ -63,6 +70,11 @@ func (s *PostgresStore) GetBook(searchQuery *string, lastId, limit *int) ([]type
 	return books, 200, types.Err{}
 }
 
+// CreateBook inserts a new book into the database based on the provided request.
+// It returns the ID of the created book, status code, and an error if the operation fails.
+// Parameters:
+// - req: a pointer to the CreateBook request containing the book details
+// Returns the created book ID, status code, and an error if the operation fails.
 func (s *PostgresStore) CreateBook(req *types.CreateBook) (types.CreateId, int, types.Err) {
 	var id types.CreateId
 	err := s.db.QueryRow(`INSERT INTO books(title, author, description) VALUES ($1, $2, $3) RETURNING id`,
@@ -78,6 +90,11 @@ func (s *PostgresStore) CreateBook(req *types.CreateBook) (types.CreateId, int, 
 	return id, 201, types.Err{}
 }
 
+// DeleteBook removes a book from the database based on the provided ID.
+// It returns the status code and an error if the operation fails.
+// Parameters:
+// - id: a pointer to the book ID to be deleted
+// Returns the status code and an error if the operation fails.
 func (s *PostgresStore) DeleteBook(id *string) (int, types.Err) {
 	res, err := s.db.Exec(`DELETE FROM books WHERE id = $1`, *id)
 	if err != nil {
@@ -103,6 +120,11 @@ func (s *PostgresStore) DeleteBook(id *string) (int, types.Err) {
 	return 200, types.Err{}
 }
 
+// UpdateBook updates the details of an existing book in the database based on the provided request.
+// It returns the status code and an error if the operation fails.
+// Parameters:
+// - req: a pointer to the UpdateBook request containing the updated book details
+// Returns the status code and an error if the operation fails.
 func (s *PostgresStore) UpdateBook(req *types.UpdateBook) (int, types.Err) {
 	res, err := s.db.Exec(`UPDATE books SET title = $1, author = $2, description = $3 WHERE id = $4`,
 		req.Title, req.Author, req.Description, req.Id)

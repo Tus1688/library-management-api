@@ -8,6 +8,13 @@ import (
 	"time"
 )
 
+// InitAdmin initializes an admin user with the given username and password.
+// It hashes the password using bcrypt and inserts the user into the employees table.
+// If the username already exists, it updates the password.
+// Parameters:
+// - username: a pointer to the admin's username
+// - password: a pointer to the admin's password
+// Returns an error if the operation fails.
 func (s *PostgresStore) InitAdmin(username, password *string) error {
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(*password), bcrypt.DefaultCost)
 	if err != nil {
@@ -21,6 +28,13 @@ func (s *PostgresStore) InitAdmin(username, password *string) error {
 	return nil
 }
 
+// Login authenticates a user based on the provided login request.
+// It checks the username and password against the stored values in the employees table.
+// If the username or password is incorrect, it returns an error with a 401 status code.
+// If the login is successful, it returns the user ID and a 200 status code.
+// Parameters:
+// - req: a pointer to the LoginRequest containing the username and password
+// Returns the user ID, status code, and an error if the operation fails.
 func (s *PostgresStore) Login(req *types.LoginRequest) (string, int, types.Err) {
 	var hashedPassword, userId string
 	err := s.db.QueryRow(`SELECT id, password FROM employees WHERE username = $1`, req.Username).

@@ -12,6 +12,7 @@ import (
 	"net/http"
 )
 
+// Server represents the API server with its dependencies.
 type Server struct {
 	store   storage.Storage
 	cache   cache.Cache
@@ -20,6 +21,13 @@ type Server struct {
 	server *http.Server
 }
 
+// NewServer creates a new Server instance.
+// Parameters:
+// - listenAddr: the address the server will listen on.
+// - store: the storage backend.
+// - cache: the cache backend.
+// - session: the session manager.
+// Returns a pointer to the created Server.
 func NewServer(listenAddr string, store storage.Storage, cache cache.Cache, session authutil.Session) *Server {
 	s := &Server{
 		store:   store,
@@ -35,6 +43,10 @@ func NewServer(listenAddr string, store storage.Storage, cache cache.Cache, sess
 	return s
 }
 
+// Shutdown gracefully shuts down the server and its dependencies.
+// Parameters:
+// - ctx: the context for shutdown.
+// Returns an error if any of the shutdown operations fail.
 func (s *Server) Shutdown(ctx context.Context) error {
 	if err := s.store.Shutdown(); err != nil {
 		return err
@@ -47,11 +59,17 @@ func (s *Server) Shutdown(ctx context.Context) error {
 	return s.server.Shutdown(ctx)
 }
 
+// Run starts the server and listens for incoming requests.
+// Returns an error if the server fails to start.
 func (s *Server) Run() error {
 	log.Print("server is running on ", s.server.Addr)
 	return s.server.ListenAndServe()
 }
 
+// handler sets up the HTTP routes and middleware for the server.
+// Parameters:
+// - s: the server instance.
+// Returns an http.Handler with the configured routes and middleware.
 func handler(s *Server) http.Handler {
 	r := chi.NewRouter()
 	r.Use(middleware.Heartbeat("/ping"))

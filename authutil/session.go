@@ -9,6 +9,8 @@ import (
 	"strings"
 )
 
+// CreateSessionToken generates a session token for a given user ID.
+// It returns the session token as a string and an error if any occurs.
 func (s *SessionStore) CreateSessionToken(uid *string) (string, types.Err) {
 	brc, err := s.session.EncodeToString([]byte(*uid))
 	if err != nil {
@@ -18,7 +20,8 @@ func (s *SessionStore) CreateSessionToken(uid *string) (string, types.Err) {
 	return brc, types.Err{}
 }
 
-// CreateRefreshToken creates a signed refresh token
+// CreateRefreshToken generates a signed refresh token.
+// It returns the refresh token as a string and an error if any occurs.
 func (s *SessionStore) CreateRefreshToken() (string, types.Err) {
 	b := make([]byte, 16)
 	_, err := rand.Read(b)
@@ -28,8 +31,8 @@ func (s *SessionStore) CreateRefreshToken() (string, types.Err) {
 	return base64.URLEncoding.EncodeToString(b), types.Err{}
 }
 
-// SignRefreshToken signs the refresh token
-// this function should be called after putting the refresh token in the redis that way we keep our database clean
+// SignRefreshToken signs the given refresh token using HMAC with SHA-256.
+// This function should be called after storing the refresh token in Redis to keep the database clean.
 func (s *SessionStore) SignRefreshToken(token *string) types.Err {
 	hash := hmac.New(sha256.New, []byte(s.refreshSecret))
 	_, err := hash.Write([]byte(*token))
@@ -41,7 +44,8 @@ func (s *SessionStore) SignRefreshToken(token *string) types.Err {
 	return types.Err{}
 }
 
-// VerifyRefreshToken verifies the refresh token and modifies the token to the original token
+// VerifyRefreshToken verifies the given refresh token by checking its signature.
+// If the token is valid, it modifies the token to the original token.
 func (s *SessionStore) VerifyRefreshToken(token *string) types.Err {
 	parts := strings.Split(*token, ".")
 	if len(parts) != 2 {
@@ -68,7 +72,8 @@ func (s *SessionStore) VerifyRefreshToken(token *string) types.Err {
 	return types.Err{}
 }
 
-// ValidateToken validates the token and returns the user id if the token is valid
+// ValidateToken validates the given token and returns the user ID if the token is valid.
+// It checks if the token is expired based on the provided TTL (time-to-live).
 func (s *SessionStore) ValidateToken(token string, ttl uint32) (string, types.Err) {
 	decodedString, err := s.session.DecodeString(token)
 	if err != nil {

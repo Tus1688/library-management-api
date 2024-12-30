@@ -8,6 +8,12 @@ import (
 	"strings"
 )
 
+// CreateBooking creates a new booking for a book.
+// It checks if the book is already booked and inserts a new booking record if available.
+// Parameters:
+// - uid: a pointer to the user ID creating the booking
+// - req: a pointer to the CreateBooking request containing the booking details
+// Returns the created booking ID, status code, and an error if the operation fails.
 func (s *PostgresStore) CreateBooking(uid *string, req *types.CreateBooking) (types.CreateId, int, types.Err) {
 	tx, err := s.db.Begin()
 	if err != nil {
@@ -58,6 +64,11 @@ func (s *PostgresStore) CreateBooking(uid *string, req *types.CreateBooking) (ty
 	return bookingId, 201, types.Err{}
 }
 
+// ReturnBook returns a booked book to the library.
+// It updates the booking and book records to mark the book as returned.
+// Parameters:
+// - id: a pointer to the booking ID to be returned
+// Returns the status code and an error if the operation fails.
 func (s *PostgresStore) ReturnBook(id *string) (int, types.Err) {
 	tx, err := s.db.Begin()
 	if err != nil {
@@ -108,6 +119,12 @@ func (s *PostgresStore) ReturnBook(id *string) (int, types.Err) {
 	return 200, types.Err{}
 }
 
+// GetBooking retrieves a list of bookings based on the last ID and limit for pagination.
+// It constructs a SQL query to fetch bookings from the database and returns the list of bookings.
+// Parameters:
+// - lastId: a pointer to the last ID for pagination
+// - limit: a pointer to the limit of bookings to retrieve
+// Returns a slice of GetBooking, status code, and an error if the operation fails.
 func (s *PostgresStore) GetBooking(lastId, limit *int) ([]types.GetBooking, int, types.Err) {
 	query := `SELECT bo.id, bo.pagination_id, b.id, b.title, b.author, bo.customer_name, bo.customer_phone,
 	bo.created_at + INTERVAL '7 days', bo.created_at, bo.updated_at, e.username, COALESCE(bo.returned_at::TEXT, ''), bo.is_returned
